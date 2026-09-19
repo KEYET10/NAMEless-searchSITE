@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>FIND</title>
+    <link rel="icon" href="favicon.png" type="image/png">
+
+    <style>
+        @import url('https://googleapis.com');
+        :root {
+    --bg-color: #ffffff;
+    --text-color: #333333;
+    --title-color: #000000;
+    --border-color: #000000;
+    --right-bg: #f9f9f9;
+    --bar-bg: #e0e0e0;
+    --input-bg: #ffffff;
+    --input-border: #555555;
+    --result-item-bg: #ffffff;
+    --result-item-border: #dddddd;
+    --result-text: #666666;
+    --menu-color: #555555;
+    --menu-hover: #000000;
+    --modal-bg: rgba(255, 255, 255, 0.98);
+    --divider-color: #cccccc;
+    --slider-bg: #ffffff;
+    --slider-border: #cccccc;
+
+    /* 업데이트 팝업 */
+    --note-bg: #e0e0e0;
+    --note-text: #777777;
+    --btn-text: #a0a0a0;
+    --sub-title: #a0a0a0;
+
+    /* 검색결과 카드: 위에서 아래로 갈수록 어두워지는 4단계 (fill=안쪽 색, ring=안쪽과 테두리 사이, border=바깥 테두리) */
+    --card0-fill: #e0e0e0; --card0-ring: #f0f0f0; --card0-border: #c9c9c9; --card0-text: #5c5c5c;
+    --card1-fill: #b3b3b3; --card1-ring: #cfcfcf; --card1-border: #9a9a9a; --card1-text: #404040;
+    --card2-fill: #969696; --card2-ring: #b0b0b0; --card2-border: #7c7c7c; --card2-text: #262626;
+    --card3-fill: #7d7d7d; --card3-ring: #969696; --card3-border: #626262; --card3-text: #141414;
+}
+
+[data-theme="dark"] {
+    color-scheme: dark; /* 스크롤바 등 브라우저 기본 요소도 어둡게 */
+    --bg-color: #121212;
+    --text-color: #bbbbbb;
+    --title-color: #ffffff;
+    --border-color: #ffffff;
+    --right-bg: #1e1e1e;
+    --bar-bg: #333333;
+    --input-bg: #2d2d2d;
+    --input-border: #888888;
+    --result-item-bg: #2d2d2d;
+    --result-item-border: #444444;
+    --result-text: #aaaaaa;
+    --menu-color: #aaaaaa;
+    --menu-hover: #ffffff;
+    --modal-bg: rgba(18, 18, 18, 0.98);
+    --divider-color: #444444;
+    --slider-bg: #2d2d2d;
+    --slider-border: #666666;
+
+    --note-bg: #2d2d2d;
+    --note-text: #aaaaaa;
+    --btn-text: #888888;
+    --sub-title: #777777;
+
+    --card0-fill: #3c3c3c; --card0-ring: #2a2a2a; --card0-border: #5e5e5e; --card0-text: #dcdcdc;
+    --card1-fill: #323232; --card1-ring: #262626; --card1-border: #525252; --card1-text: #cfcfcf;
+    --card2-fill: #292929; --card2-ring: #202020; --card2-border: #464646; --card2-text: #c2c2c2;
+    --card3-fill: #202020; --card3-ring: #1a1a1a; --card3-border: #3a3a3a; --card3-text: #b5b5b5;
+}
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            box-sizing: border-box;
+            overflow: hidden; 
+            font-family: 'Noto Sans KR', sans-serif;
+            line-height: 1.7;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+        }
+
+        body {
+            padding: 10px; 
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .top-menu-bar {
+            width: 100%;
+            display: flex;
+            gap: 20px;
+            padding: 5px 10px;
+            box-sizing: border-box;
+            background-color: var(--bg-color);
+        }
+
+        .menu-item {
+            font-size: 15px;
+            color: var(--menu-color);
+            cursor: pointer;
+            user-select: none;
+            font-weight: 400;
+        }
+
+        .menu-item:hover {
+            color: var(--menu-hover);
+            font-weight: 700;
+        }
+
+                .content-box {
+            border: 2px solid var(--border-color); 
+            width: 100%;
+            height: calc(100vh - 50px); 
+            box-sizing: border-box;
+            position: relative;
+            display: flex;
+        }
+
+        .left-section {
+            width: 60%;
+            height: 100%; 
+            overflow-y: auto;
+            padding: 60px 40px;
+            box-sizing: border-box;
+            scroll-behavior: smooth;
+        }
+
+        .right-section {
+            width: 40%;
+            height: 100%;
+            border-left: 1px solid var(--divider-color);
+            background-color: var(--right-bg);
+            padding: 60px 30px 40px 30px;
+            overflow-y: auto;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .search-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 36px;
+            font-weight: 700;
+            color: #888;
+            margin-bottom: 25px;
+            text-align: center;
+            letter-spacing: -0.5px;
+        }
+
+        .search-bar {
+            width: 100%;
+            max-width: 320px;
+            padding: 12px 20px;
+            font-size: 15px;
+            border: 2px solid var(--input-border);
+            border-radius: 25px;
+            outline: none;
+            box-sizing: border-box;
+            background-color: var(--input-bg);
+            font-family: inherit;
+            text-align: center;
+            color: var(--text-color);
+        }
+
+        .search-bar::placeholder {
+            color: var(--result-text);
+            opacity: 0.7;
+        }
+
+        .search-bar:focus {
+            border-color: var(--border-color);
+            box-shadow: 0 0 8px rgba(0,0,0,0.05);
+        }
+
+        .search-results-area {
+            width: 100%;
+            max-width: 415px;
+            margin-top: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .result-item {
+            --fill: var(--card0-fill); --ring: var(--card0-ring); --edge: var(--card0-border); --ink: var(--card0-text);
+            background: var(--ring);
+            padding: 5px;
+            border: 3px solid var(--edge);
+            border-radius: 12px;
+            cursor: pointer;
+        }
+        .result-item[data-shade="1"] { --fill: var(--card1-fill); --ring: var(--card1-ring); --edge: var(--card1-border); --ink: var(--card1-text); }
+        .result-item[data-shade="2"] { --fill: var(--card2-fill); --ring: var(--card2-ring); --edge: var(--card2-border); --ink: var(--card2-text); }
+        .result-item[data-shade="3"] { --fill: var(--card3-fill); --ring: var(--card3-ring); --edge: var(--card3-border); --ink: var(--card3-text); }
+
+        .result-inner {
+            background: var(--fill);
+            border-radius: 8px;
+            padding: 16px 18px 18px 18px;
+        }
+
+        .result-item h4 {
+            margin: 0 0 8px 0;
+            font-size: 24px;
+            font-weight: 700;
+            line-height: 1.3;
+            color: var(--ink);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .result-item p {
+            margin: 0;
+            font-size: 14px;
+            font-weight: 700;
+            line-height: 1.8;
+            color: var(--ink);
+            word-break: keep-all;
+            overflow-wrap: anywhere;
+        }
+
+        .no-result {
+            text-align: center;
+            color: var(--result-text);
+            margin-top: 20px;
+            font-size: 15px;
+        }
+
+        .text-paragraph {
+            width: 100%;
+            margin-bottom: 80px;
+            font-size: 17px;
+            color: var(--text-color);
+            word-break: keep-all;
+            font-weight: 300;
+            animation: fadeUp linear both;
+            animation-timeline: view();
+            animation-range: entry 10% cover 40%;
+        }
+
+        .text-paragraph h2 {
+            font-size: 22px;
+            color: var(--title-color);
+            margin-bottom: 15px;
+            border-left: 3px solid var(--border-color);
+            padding-left: 10px;
+            font-weight: 700;
+        }
+
+        .progress-container {
+            position: absolute;
+            bottom: 30px;
+            left: 30px;
+            width: calc(60% - 60px);
+            height: 4px;
+            background-color: var(--bar-bg);
+            z-index: 10;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background-color: var(--border-color);
+            width: 0%;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--modal-bg);
+            z-index: 100;
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            width: 100%;
+            max-width: 500px;
+            padding: 40px;
+            box-sizing: border-box;
+            position: relative;
+            text-align: center;
+        }
+
+        .modal-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--title-color);
+        }
+
+        .modal-close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 28px;
+            font-weight: bold;
+            color: var(--title-color);
+            cursor: pointer;
+            border: none;
+            background: none;
+        }
+
+        .modal-close-btn:hover {
+            color: var(--menu-hover);
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .modal-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background-color: var(--modal-bg); z-index: 100;
+    display: none; justify-content: center; align-items: center;
+}
+.modal-content { width: 100%; max-width: 500px; padding: 40px; box-sizing: border-box; position: relative; text-align: left; color: var(--text-color); }
+.setting-header { display: flex; align-items: baseline; gap: 10px; margin-bottom: 40px; }
+.setting-title-ko { font-size: 32px; font-weight: 700; color: var(--title-color); }
+.setting-title-en { font-family: 'Poppins', sans-serif; font-size: 28px; font-weight: 700; color: var(--divider-color); }
+.setting-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+.setting-info h3 { margin: 0; font-size: 20px; font-weight: 700; color: var(--title-color); display: flex; align-items: center; gap: 10px; }
+.setting-info h3::before { content: "|"; font-weight: 700; color: var(--title-color); }
+.setting-info p { margin: 5px 0 0 15px; font-size: 13px; color: var(--result-text); }
+.switch { position: relative; display: inline-block; width: 60px; height: 30px; }
+.switch input { opacity: 0; width: 0; height: 0; }
+.slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--slider-bg); border: 1px solid var(--slider-border); border-radius: 30px; }
+body.anim-on .slider::before { transition: .3s; }
+.slider::before { position: absolute; content: ""; height: 24px; width: 24px; left: 2px; bottom: 2px; background-color: #ff6b6b; border-radius: 50%; }
+input:checked + .slider::before { transform: translateX(30px); background-color: #2ecc71 !important; }
+.modal-close-btn { position: absolute; top: 10px; right: 10px; font-size: 28px; font-weight: bold; color: var(--title-color); cursor: pointer; border: none; background: none; }
+
+
+/* ===== 업데이트 팝업 ===== */
+.setting-title-en.is-strong { color: var(--sub-title); }
+.update-note {
+    background: var(--note-bg);
+    color: var(--note-text);
+    border-radius: 6px;
+    padding: 16px 16px 24px 16px;
+    font-size: 14px;
+    line-height: 1.45;
+    word-break: keep-all;
+}
+.update-note p { margin: 0 0 1.45em 0; }
+.update-note p:last-child { margin-bottom: 0; }
+.inquiry-btn {
+    display: inline-block;
+    margin-top: 12px;
+    padding: 6px 10px;
+    background: var(--note-bg);
+    color: var(--btn-text);
+    font-size: 12px;
+    border-radius: 3px;
+    text-decoration: none;
+}
+.inquiry-btn:hover { color: var(--title-color); }
+.inquiry-btn:focus-visible { outline: 2px solid var(--border-color); outline-offset: 2px; }
+
+/* ===== 애니메이션 ===== */
+
+/* 팝업 (설정 / 업데이트 / 추가): 열릴 때 배경이 서서히 나타나고, 내용은 살짝 위로 올라오며 나타남 */
+.modal-overlay.show { display: flex; animation: overlayIn .25s ease both; }
+.modal-overlay.show .modal-content { animation: contentIn .35s cubic-bezier(.2, .8, .2, 1) both; }
+.modal-overlay.show.closing { animation: overlayOut .2s ease both; }
+.modal-overlay.show.closing .modal-content { animation: contentOut .2s ease both; }
+
+@keyframes overlayIn  { from { opacity: 0; } to { opacity: 1; } }
+@keyframes overlayOut { from { opacity: 1; } to { opacity: 0; } }
+@keyframes contentIn  { from { opacity: 0; transform: translateY(24px) scale(.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@keyframes contentOut { from { opacity: 1; transform: translateY(0) scale(1); } to { opacity: 0; transform: translateY(12px) scale(.98); } }
+
+/* 검색 결과: 카드가 아래에서 위로 하나씩 순서대로 나타남 (딜레이는 JS에서 지정) */
+.result-item, .no-result { animation: resultIn .4s cubic-bezier(.2, .8, .2, 1) both; }
+@keyframes resultIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+
+/* 애니메이션 스위치를 끄면 위 효과들과 스크롤 등장 효과를 모두 끔 */
+body.anim-off .modal-overlay,
+body.anim-off .modal-content,
+body.anim-off .result-item,
+body.anim-off .no-result,
+body.anim-off .text-paragraph { animation: none !important; }
+
+@media (prefers-reduced-motion: reduce) {
+    .modal-overlay, .modal-content, .result-item, .no-result, .text-paragraph { animation: none !important; }
+}
+
+    </style>
+</head>
+<body class="anim-on">
+
+    <div class="top-menu-bar">
+        <div class="menu-item" onclick="openModal('setting-modal')">설정</div>
+        <div class="menu-item" onclick="openModal('update-modal')">업데이트</div>
+        <div class="menu-item" onclick="openModal('add-modal')">추가</div>
+    </div>
+
+    <div class="content-box">
+        <div class="left-section" id="scroll-content">
+            <div class="text-paragraph">
+                <h2>01. 검색창에 아무나 검색해봐요!</h2>
+                <p>아무나 유명한 사람이 나오진 않겠지만.. 당신이 "추가"하는것에 달려있어요 !</p>
+            </div>
+
+            <div class="text-paragraph">
+                <h2>02. 앗참 ! 불건전한 단어는 안돼요 !</h2>
+                <p>만약 그게 당신의 이름이라 하더라도.. 특징이라 하더라도 위험해요 !</p>
+            </div>
+
+            <div class="text-paragraph">
+                <h2>03. 혹시 자신의 이름이 없나요 ?</h2>
+                <p>너무 기죽지 마요! 위 메뉴중 "추가"를 클릭하여 자신을 추가해보세요!</p>
+            </div>
+
+            <div class="text-paragraph">
+                <h2>04. 추가하고싶은 이름이 좀.. 많나요?</h2>
+                <p>추가할수 있는 이름은 총 3개긴 한데.. 더 추가하고싶음 직접 해보세요! </p>
+            </div>
+
+            <div class="text-paragraph">
+                <h2>05. 혹시 맘에 안들거나 의도치 않은 이름이 있나요?</h2>
+                <p>자신이 올린것은 직접 지울수 있어요! ..근데 만약 자신이 직접 올린게 아니라면..?</p>
+            </div>
+
+            <div class="text-paragraph">
+                <h2>06. 남이 허락없이 제 이름을 기분나쁘게 추가했나요?</h2>
+                <p>음.. 그런경우 "업데이트"로 가서 문의할수 있어요!</p>
+            </div>
+        </div>
+
+        <div class="right-section">
+            <div class="search-title">Search everything</div>
+            <input type="text" class="search-bar" id="search-input" placeholder="serch to florer" autocomplete="off">
+            <div class="search-results-area" id="results-area"></div>
+        </div>
+
+        <div class="progress-container">
+            <div class="progress-bar" id="bar"></div>
+        </div>
+    </div>
+
+        <!-- 💡 설정창 팝업 박스 시작 -->
+    <div id="setting-modal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="modal-close-btn" onclick="closeModal('setting-modal')">×</button>
+            <div class="setting-header">
+                <span class="setting-title-ko">설정</span>
+                <span class="setting-title-en">SETTING</span>
+            </div>
+            
+            <div class="setting-row">
+                <div class="setting-info">
+                    <h3>어두운 테마</h3>
+                    <p>밝아서 눈아프신가요 ?</p>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" id="theme-toggle">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            
+            <div class="setting-row" style="margin-top: 20px;">
+                <div class="setting-info">
+                    <h3>애니메이션</h3>
+                    <p>렉걸림 또는 거슬림을 유발할 수 있습니다.</p>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" id="anim-toggle" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <!-- 💡 업데이트창 팝업 박스 -->
+    <div id="update-modal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="modal-close-btn" onclick="closeModal('update-modal')">×</button>
+            <div class="setting-header">
+                <span class="setting-title-ko">업데이트</span>
+                <span class="setting-title-en is-strong">UPDATE</span>
+            </div>
+
+            <div class="update-note">
+                <p>"NAME"less search SITE<br>v.&nbsp; 1.0 업데이트</p>
+                <p>| 캐릭터나 지인의 닉네임을 검색해서 찾을수 있습니다.</p>
+                <p>| 없다면 추가할수도 있습니다.</p>
+                <p>감사합니다.</p>
+            </div>
+
+            <!-- 👇 문의 링크를 바꾸려면 href 주소만 수정하세요 -->
+            <a class="inquiry-btn" href="https://discord.gg/rw3Bst7AMg" target="_blank" rel="noopener noreferrer">문의하기</a>
+        </div>
+    </div>
+
+    <!-- 💡 추가창 팝업 박스 -->
+    <div id="add-modal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="modal-close-btn" onclick="closeModal('add-modal')">×</button>
+            <div class="setting-header"><span class="setting-title-ko">추가</span></div>
+            <p>새로운 기능을 추가하는 화면입니다.</p>
+        </div>
+    </div>
+
+
+
+
+        <script>
+        const scrollContent = document.getElementById('scroll-content');
+        const progressBar = document.getElementById('bar');
+        const searchInput = document.getElementById('search-input');
+        const resultsArea = document.getElementById('results-area');
+        const themeToggle = document.getElementById('theme-toggle');
+        const animToggle = document.getElementById('anim-toggle');
+        let lastKey = ""; // 직전 검색 결과 목록 (같은 결과면 애니메이션을 다시 재생하지 않기 위함)
+
+        /* 💡 검색 대상 데이터: 여기에 { name: "이름", desc: "설명" } 형태로 계속 추가하면 됩니다 */
+        const people = [
+            { name: "키엣",  desc: "고양이입니다." },
+            { name: "라케",  desc: "레몬고양이입니다." },
+            { name: "글루미", desc: "물속성고양이입니다." }
+        ];
+
+        /* 💡 한글 검색용 변환: 글자를 자음/모음 단위로 쪼개서 비교해요.
+           - 한글은 입력 중간 상태(예: "라" → "랔" → "라케")에서도 결과가 사라지지 않게 받침을 자음으로 통일
+           - 덕분에 "ㅋ", "키ㅇ" 같은 미완성 글자로도 검색되고, 이름의 어느 부분만 쳐도 나옴
+           - 영어는 대소문자 구분 없음 */
+        const JONG_TO_CHO = {
+            0x11A8:0x1100, 0x11A9:0x1101, 0x11AB:0x1102, 0x11AE:0x1103, 0x11AF:0x1105, 0x11B7:0x1106,
+            0x11B8:0x1107, 0x11BA:0x1109, 0x11BB:0x110A, 0x11BC:0x110B, 0x11BD:0x110C, 0x11BE:0x110E,
+            0x11BF:0x110F, 0x11C0:0x1110, 0x11C1:0x1111, 0x11C2:0x1112
+        };
+        function normalizeKo(str) {
+            return str.toLowerCase().normalize('NFKD')
+                .replace(/[\u11A8-\u11C2]/g, ch => String.fromCharCode(JONG_TO_CHO[ch.charCodeAt(0)] || ch.charCodeAt(0)));
+        }
+
+        /* 💡 검색결과 글자 자동 맞춤: 글이 길어질수록 글자가 조금씩 작아져서 칸을 넘지 않게 해요 */
+        const TITLE_MAX = 24, TITLE_MIN = 12;            // 제목 글자 크기 범위(px) — 제목은 한 줄
+        const DESC_MAX = 14, DESC_MIN = 9;               // 설명 글자 크기 범위(px)
+        const DESC_LINES = 4, DESC_LINE_HEIGHT = 1.8;    // 설명은 기본 크기 기준 최대 4줄 높이까지
+
+        function fitTitle(el) {
+            let size = TITLE_MAX;
+            el.style.fontSize = size + 'px';
+            while (el.scrollWidth > el.clientWidth && size > TITLE_MIN) {
+                size -= 0.5;
+                el.style.fontSize = size + 'px';
+            }
+        }
+
+        function fitDesc(el) {
+            const budget = DESC_MAX * DESC_LINE_HEIGHT * DESC_LINES;
+            let size = DESC_MAX;
+            el.style.cssText = 'font-size:' + size + 'px';
+            while (el.scrollHeight > budget + 1 && size > DESC_MIN) {
+                size -= 0.5;
+                el.style.fontSize = size + 'px';
+            }
+            // 가장 작은 크기로도 안 들어가면 마지막 줄을 "..."으로 줄임
+            if (el.scrollHeight > budget + 1) {
+                el.style.display = '-webkit-box';
+                el.style.webkitBoxOrient = 'vertical';
+                el.style.webkitLineClamp = String(Math.floor(budget / (size * DESC_LINE_HEIGHT)));
+                el.style.overflow = 'hidden';
+            }
+        }
+
+        function fitAll() {
+            resultsArea.querySelectorAll('.result-item').forEach(card => {
+                fitTitle(card.querySelector('h4'));
+                fitDesc(card.querySelector('p'));
+            });
+        }
+
+        // 화면 크기가 바뀌거나 폰트가 뒤늦게 불러와져도 다시 맞춤
+        let lastWidth = 0;
+        new ResizeObserver(entries => {
+            const w = Math.round(entries[0].contentRect.width);
+            if (w !== lastWidth) { lastWidth = w; fitAll(); }
+        }).observe(resultsArea);
+        if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitAll);
+
+        /* 💡 스크롤 양(%) 계산해서 스케치 속 검은색 블록 바 늘려주기 */
+        scrollContent.addEventListener('scroll', () => {
+            const scrollTop = scrollContent.scrollTop;
+            const scrollHeight = scrollContent.scrollHeight - scrollContent.clientHeight;
+            const scrollPercentage = (scrollTop / scrollHeight) * 100;
+            progressBar.style.height = scrollPercentage + '%';
+        });
+
+        /* 💡 실시간 브라우저 탭 제목 연동 및 검색 기능 */
+        searchInput.addEventListener('input', (e) => {
+            const value = e.target.value.trim();
+            document.title = value === "" ? "FIND" : value;
+            
+            if (value === "") { resultsArea.innerHTML = ""; lastKey = ""; return; }
+            const searchVal = normalizeKo(value);
+            
+            // (검색 데이터는 위쪽 people 목록에서 관리해요)
+
+            const filtered = people.filter(p => normalizeKo(p.name).includes(searchVal));
+
+            // 결과 목록이 이전과 같으면 그대로 둠 (글자를 칠 때마다 깜빡이는 것 방지)
+            const key = filtered.length === 0 ? "none" : filtered.map(p => p.name).join("|");
+            if (key === lastKey) return;
+            lastKey = key;
+            resultsArea.innerHTML = "";
+
+            if (filtered.length === 0) {
+                resultsArea.innerHTML = `<div class="no-result">검색 결과가 없습니다.</div>`;
+            } else {
+                filtered.forEach((item, i) => {
+                    const div = document.createElement('div');
+                    div.className = 'result-item';
+                    div.dataset.shade = Math.min(i, 3); // 0~3단계: 아래로 갈수록 어두운 그라데이션
+                    div.style.animationDelay = (i * 80) + 'ms'; // 카드마다 80ms씩 늦게 등장
+
+                    const inner = document.createElement('div');
+                    inner.className = 'result-inner';
+                    const name = document.createElement('h4');
+                    name.textContent = item.name;
+                    const desc = document.createElement('p');
+                    desc.textContent = item.desc;
+                    inner.append(name, desc);
+                    div.appendChild(inner);
+                    resultsArea.appendChild(div);
+                });
+                fitAll();
+            }
+        });
+
+        /* 💡 스케치 기획안대로 다크 모드 켜고 끄기 */
+        themeToggle.addEventListener('change', (e) => {
+            if (e.target.checked) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            } else {
+                document.documentElement.removeAttribute('data-theme');
+            }
+        });
+
+        /* 💡 스케치 기획안대로 애니메이션 On/Off 제어하기 */
+        animToggle.addEventListener('change', (e) => {
+            if (e.target.checked) {
+                document.body.classList.remove('anim-off');
+                document.body.classList.add('anim-on');
+            } else {
+                document.body.classList.remove('anim-on');
+                document.body.classList.add('anim-off');
+            }
+        });
+
+        function openModal(id) {
+            const modal = document.getElementById(id);
+            modal.classList.remove('closing');
+            modal.classList.add('show');
+        }
+
+        function closeModal(id) {
+            const modal = document.getElementById(id);
+            // 애니메이션이 꺼져 있으면 바로 닫기
+            if (document.body.classList.contains('anim-off')) {
+                modal.classList.remove('show', 'closing');
+                return;
+            }
+            // 닫힘 애니메이션이 끝나면 완전히 숨김
+            modal.classList.add('closing');
+            modal.addEventListener('animationend', function done(e) {
+                if (e.target !== modal) return; // 안쪽 요소의 애니메이션 종료는 무시
+                modal.removeEventListener('animationend', done);
+                if (!modal.classList.contains('closing')) return; // 닫히는 도중 다시 열렸다면 그대로 둠
+                modal.classList.remove('show', 'closing');
+            });
+        }
+    </script>
+
+</body>
+</html>
