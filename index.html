@@ -26,21 +26,47 @@
     --slider-bg: #ffffff;
     --slider-border: #cccccc;
 
-    /* 업데이트 팝업 */
     --note-bg: #e0e0e0;
     --note-text: #777777;
     --btn-text: #a0a0a0;
     --sub-title: #a0a0a0;
 
-    /* 검색결과 카드: 위에서 아래로 갈수록 어두워지는 4단계 (fill=안쪽 색, ring=안쪽과 테두리 사이, border=바깥 테두리) */
     --card0-fill: #e0e0e0; --card0-ring: #f0f0f0; --card0-border: #c9c9c9; --card0-text: #5c5c5c;
     --card1-fill: #b3b3b3; --card1-ring: #cfcfcf; --card1-border: #9a9a9a; --card1-text: #404040;
     --card2-fill: #969696; --card2-ring: #b0b0b0; --card2-border: #7c7c7c; --card2-text: #262626;
     --card3-fill: #7d7d7d; --card3-ring: #969696; --card3-border: #626262; --card3-text: #141414;
+
+    --add-box: #dedede;
+    --field-bg: #ededed;
+    --field-border: #a0a0a0;
+    --field-focus: #6b6b6b;
+    --field-text: #555555;
+    --field-ph: #a8a8a8;
+    --count-text: #9a9a9a;
+    --addbtn-off-bg: #7a7a7a;
+    --addbtn-off-text: #5e5e5e;
+    --addbtn-on-bg: #ededed;
+    --addbtn-on-border: #c4c4c4;
+    --addbtn-on-text: #8f8f8f;
+    --warn-title: #ff7b7b;
+    --warn-text: #b8b8b8;
+    --hist-label: #bbbbbb;
+    --row-bg: #c2c2c2;
+    --row-edge: rgba(255, 255, 255, 0.85);
+    --row-text: #666666;
+    --row-edit-bg: #ffffff;
+    --row-edit-text: #555555;
+    --row-del-bg: #9a9a9a;
+    --row-del-text: #e04848;
+    --edit-card-bg: #ffffff;
+    --edit-field-bg: #c2c2c2;
+    --edit-field-text: #ffffff;
+    --edit-btn-off: #b8b8b8;
+    --edit-btn-on: #666666;
 }
 
 [data-theme="dark"] {
-    color-scheme: dark; /* 스크롤바 등 브라우저 기본 요소도 어둡게 */
+    color-scheme: dark;
     --bg-color: #121212;
     --text-color: #bbbbbb;
     --title-color: #ffffff;
@@ -68,6 +94,34 @@
     --card1-fill: #323232; --card1-ring: #262626; --card1-border: #525252; --card1-text: #cfcfcf;
     --card2-fill: #292929; --card2-ring: #202020; --card2-border: #464646; --card2-text: #c2c2c2;
     --card3-fill: #202020; --card3-ring: #1a1a1a; --card3-border: #3a3a3a; --card3-text: #b5b5b5;
+
+    --add-box: #262626;
+    --field-bg: #333333;
+    --field-border: #666666;
+    --field-focus: #cccccc;
+    --field-text: #e2e2e2;
+    --field-ph: #808080;
+    --count-text: #8a8a8a;
+    --addbtn-off-bg: #2f2f2f;
+    --addbtn-off-text: #666666;
+    --addbtn-on-bg: #4a4a4a;
+    --addbtn-on-border: #8a8a8a;
+    --addbtn-on-text: #f0f0f0;
+    --warn-title: #ff8a8a;
+    --warn-text: #8c8c8c;
+    --hist-label: #777777;
+    --row-bg: #3a3a3a;
+    --row-edge: #565656;
+    --row-text: #dcdcdc;
+    --row-edit-bg: #555555;
+    --row-edit-text: #f0f0f0;
+    --row-del-bg: #2a2a2a;
+    --row-del-text: #ff7070;
+    --edit-card-bg: #1e1e1e;
+    --edit-field-bg: #3a3a3a;
+    --edit-field-text: #f0f0f0;
+    --edit-btn-off: #666666;
+    --edit-btn-on: #dddddd;
 }
 
         html, body {
@@ -368,32 +422,131 @@ input:checked + .slider::before { transform: translateX(30px); background-color:
 .inquiry-btn:hover { color: var(--title-color); }
 .inquiry-btn:focus-visible { outline: 2px solid var(--border-color); outline-offset: 2px; }
 
+/* ===== 추가 팝업 ===== */
+#add-modal { align-items: flex-start; overflow-y: auto; }
+#add-modal .modal-content { max-width: 800px; margin: auto; }
+.add-layout { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); column-gap: 12px; align-items: start; }
+
+.add-form { background: var(--add-box); border-radius: 9px; padding: 22px 10px; }
+.field { position: relative; }
+.field + .field { margin-top: 11px; }
+.field input, .field textarea {
+    display: block; width: 100%; box-sizing: border-box;
+    font-family: inherit; color: var(--field-text);
+    background: var(--field-bg); border: 2px solid var(--field-border);
+    border-radius: 7px; outline: none;
+}
+.field input { height: 38px; padding: 0 58px 0 14px; font-size: 16px; }
+.field textarea { height: 138px; padding: 10px 12px 24px 12px; font-size: 13px; line-height: 1.6; resize: none; }
+.field input::placeholder, .field textarea::placeholder { color: var(--field-ph); }
+.field input:focus, .field textarea:focus { border-color: var(--field-focus); }
+.count { position: absolute; right: 10px; bottom: 4px; font-size: 10px; font-weight: 700; color: var(--count-text); pointer-events: none; font-variant-numeric: tabular-nums; }
+.count.at-limit { color: var(--warn-title); }
+
+.add-btn {
+    display: block; width: 100%; height: 32px; margin-top: 7px; box-sizing: border-box;
+    font-family: inherit; font-size: 15px; font-weight: 700; cursor: pointer;
+    background: var(--addbtn-on-bg); color: var(--addbtn-on-text);
+    border: 2px solid var(--addbtn-on-border); border-radius: 6px;
+}
+.add-btn:not(:disabled):hover { border-color: var(--field-border); color: var(--field-text); }
+.add-btn:disabled { background: var(--addbtn-off-bg); color: var(--addbtn-off-text); border-color: transparent; cursor: not-allowed; }
+.add-btn.done, .add-btn.done:disabled { background: var(--addbtn-on-bg); color: var(--addbtn-on-text); border-color: var(--addbtn-on-border); cursor: default; }
+.add-status { min-height: 18px; margin-top: 6px; font-size: 12px; line-height: 1.4; color: var(--warn-title); }
+
+.add-side { position: relative; min-width: 0; }
+.hist-slot { position: relative; height: 114px; }
+.hist-label { position: absolute; top: -20px; left: 2px; font-size: 11px; font-weight: 700; color: var(--hist-label); }
+.hist-panel { height: 100%; box-sizing: border-box; background: var(--add-box); border-radius: 6px; padding: 8px 8px 2px 8px; overflow-y: auto; scrollbar-width: thin; }
+.hist-slot.empty .hist-label, .hist-slot.empty .hist-panel { visibility: hidden; }
+.hist-row {
+    display: flex; align-items: center; justify-content: space-between; gap: 8px;
+    height: 36px; box-sizing: border-box; margin-bottom: 6px; padding: 0 3px 0 16px; overflow: hidden;
+    background: var(--row-bg); border: 1px solid var(--row-edge); border-radius: 18px;
+}
+.hist-name { flex: 1; min-width: 0; font-size: 16px; color: var(--row-text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.hist-actions { display: flex; gap: 4px; flex: none; }
+.hist-btn { height: 28px; min-width: 58px; padding: 0 12px; border: none; border-radius: 14px; font-family: inherit; font-size: 13px; cursor: pointer; }
+.hist-btn.edit { background: var(--row-edit-bg); color: var(--row-edit-text); }
+.hist-btn.del { background: var(--row-del-bg); color: var(--row-del-text); }
+.hist-btn.del.armed { background: var(--row-del-text); color: #ffffff; }
+
+.add-notice { margin-top: 22px; }
+.add-notice h4 { margin: 0 0 8px 0; font-size: 15px; font-weight: 700; color: var(--warn-title); }
+.add-notice p { margin: 0 0 12px 0; padding-left: 3em; text-indent: -3em; font-size: 11px; font-weight: 700; line-height: 1.6; color: var(--warn-text); word-break: keep-all; }
+
+@media (max-width: 760px) {
+    #add-modal .modal-content { padding: 28px 18px; }
+    .add-layout { grid-template-columns: minmax(0, 1fr); row-gap: 6px; }
+    .hist-slot { margin-top: 26px; }
+    .hist-slot.empty { display: none; }
+}
+
+/* ===== 수정 팝업 ===== */
+.edit-overlay { background-color: rgba(0, 0, 0, 0.4); z-index: 110; }
+.edit-wrap { width: 100%; max-width: 480px; padding: 0 16px; box-sizing: border-box; }
+.edit-heading { margin-bottom: 12px; text-align: center; font-size: 24px; font-weight: 700; color: #ffffff; }
+.edit-card { padding: 14px 14px 8px 14px; background: var(--edit-card-bg); border-radius: 12px; }
+.edit-card .field input, .edit-card .field textarea { background: var(--edit-field-bg); color: var(--edit-field-text); border: none; border-radius: 0; }
+.edit-card .field input { height: 42px; font-size: 17px; }
+.edit-card .field textarea { height: 150px; font-size: 14px; font-weight: 700; }
+.edit-card .field input:focus, .edit-card .field textarea:focus { box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.7); }
+.edit-card .count { color: rgba(255, 255, 255, 0.75); }
+.edit-card .count.at-limit { color: #ffffff; }
+.edit-status { min-height: 18px; margin-top: 8px; font-size: 12px; line-height: 1.4; text-align: center; color: var(--warn-title); }
+.edit-submit { display: block; width: 100%; padding: 8px 0 10px 0; background: none; border: none; font-family: inherit; font-size: 15px; font-weight: 600; color: var(--edit-btn-on); cursor: pointer; }
+.edit-submit:disabled { color: var(--edit-btn-off); cursor: not-allowed; }
+
 /* ===== 애니메이션 ===== */
 
-/* 팝업 (설정 / 업데이트 / 추가): 열릴 때 배경이 서서히 나타나고, 내용은 살짝 위로 올라오며 나타남 */
 .modal-overlay.show { display: flex; animation: overlayIn .25s ease both; }
-.modal-overlay.show .modal-content { animation: contentIn .35s cubic-bezier(.2, .8, .2, 1) both; }
+.modal-overlay.show .modal-content,
+.modal-overlay.show .edit-wrap { animation: contentIn .35s cubic-bezier(.2, .8, .2, 1) both; }
 .modal-overlay.show.closing { animation: overlayOut .2s ease both; }
-.modal-overlay.show.closing .modal-content { animation: contentOut .2s ease both; }
+.modal-overlay.show.closing .modal-content,
+.modal-overlay.show.closing .edit-wrap { animation: contentOut .2s ease both; }
 
 @keyframes overlayIn  { from { opacity: 0; } to { opacity: 1; } }
 @keyframes overlayOut { from { opacity: 1; } to { opacity: 0; } }
 @keyframes contentIn  { from { opacity: 0; transform: translateY(24px) scale(.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
 @keyframes contentOut { from { opacity: 1; transform: translateY(0) scale(1); } to { opacity: 0; transform: translateY(12px) scale(.98); } }
 
-/* 검색 결과: 카드가 아래에서 위로 하나씩 순서대로 나타남 (딜레이는 JS에서 지정) */
 .result-item, .no-result { animation: resultIn .4s cubic-bezier(.2, .8, .2, 1) both; }
 @keyframes resultIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
 
-/* 애니메이션 스위치를 끄면 위 효과들과 스크롤 등장 효과를 모두 끔 */
+.hist-row.enter { animation: rowIn .38s cubic-bezier(.2, .8, .2, 1) both; }
+.hist-row.leaving { animation: rowOut .28s ease both; }
+.hist-row.flash { animation: rowFlash .9s ease; }
+@keyframes rowIn { from { opacity: 0; transform: translateX(18px); } to { opacity: 1; transform: none; } }
+@keyframes rowOut { from { opacity: 1; transform: none; height: 36px; margin-bottom: 6px; } to { opacity: 0; transform: translateX(24px); height: 0; margin-bottom: 0; border-width: 0; } }
+@keyframes rowFlash { 0% { box-shadow: 0 0 0 0 rgba(255, 123, 123, 0); } 30% { box-shadow: 0 0 0 4px rgba(255, 123, 123, 0.55); } 100% { box-shadow: 0 0 0 0 rgba(255, 123, 123, 0); } }
+
+.add-btn.done { animation: donePulse .45s ease; }
+.count.bump { animation: countBump .3s ease; }
+.add-status:not(:empty), .edit-status:not(:empty) { animation: statusIn .25s ease both; }
+@keyframes donePulse { 0% { transform: scale(1); } 40% { transform: scale(1.03); } 100% { transform: scale(1); } }
+@keyframes countBump { 0% { transform: scale(1); } 40% { transform: scale(1.35); } 100% { transform: scale(1); } }
+@keyframes statusIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+
+body.anim-on .add-btn, body.anim-on .field input, body.anim-on .field textarea,
+body.anim-on .hist-btn, body.anim-on .edit-submit, body.anim-on .count {
+    transition: background-color .25s ease, border-color .25s ease, color .25s ease, box-shadow .25s ease;
+}
+
 body.anim-off .modal-overlay,
 body.anim-off .modal-content,
+body.anim-off .edit-wrap,
 body.anim-off .result-item,
 body.anim-off .no-result,
+body.anim-off .hist-row,
+body.anim-off .add-btn,
+body.anim-off .count,
+body.anim-off .add-status,
+body.anim-off .edit-status,
 body.anim-off .text-paragraph { animation: none !important; }
 
 @media (prefers-reduced-motion: reduce) {
-    .modal-overlay, .modal-content, .result-item, .no-result, .text-paragraph { animation: none !important; }
+    .modal-overlay, .modal-content, .edit-wrap, .result-item, .no-result, .hist-row, .add-btn, .count, .add-status, .edit-status, .text-paragraph { animation: none !important; }
 }
 
     </style>
@@ -441,7 +594,7 @@ body.anim-off .text-paragraph { animation: none !important; }
 
         <div class="right-section">
             <div class="search-title">Search everything</div>
-            <input type="text" class="search-bar" id="search-input" placeholder="serch to florer" autocomplete="off">
+            <input type="text" class="search-bar" id="search-input" placeholder="search to everyone" autocomplete="off">
             <div class="search-results-area" id="results-area"></div>
         </div>
 
@@ -450,7 +603,7 @@ body.anim-off .text-paragraph { animation: none !important; }
         </div>
     </div>
 
-        <!-- 💡 설정창 팝업 박스 시작 -->
+        <!-- 설정창 팝업 박스 시작 -->
     <div id="setting-modal" class="modal-overlay">
         <div class="modal-content">
             <button class="modal-close-btn" onclick="closeModal('setting-modal')">×</button>
@@ -483,7 +636,7 @@ body.anim-off .text-paragraph { animation: none !important; }
         </div>
     </div>
 
-    <!-- 💡 업데이트창 팝업 박스 -->
+    <!-- 업데이트창 팝업 박스 -->
     <div id="update-modal" class="modal-overlay">
         <div class="modal-content">
             <button class="modal-close-btn" onclick="closeModal('update-modal')">×</button>
@@ -499,17 +652,66 @@ body.anim-off .text-paragraph { animation: none !important; }
                 <p>감사합니다.</p>
             </div>
 
-            <!-- 👇 문의 링크를 바꾸려면 href 주소만 수정하세요 -->
+            <!-- 문의 링크이심 -->
             <a class="inquiry-btn" href="https://discord.gg/rw3Bst7AMg" target="_blank" rel="noopener noreferrer">문의하기</a>
         </div>
     </div>
 
-    <!-- 💡 추가창 팝업 박스 -->
+    <!-- 추가창 팝업 박스 -->
     <div id="add-modal" class="modal-overlay">
         <div class="modal-content">
             <button class="modal-close-btn" onclick="closeModal('add-modal')">×</button>
-            <div class="setting-header"><span class="setting-title-ko">추가</span></div>
-            <p>새로운 기능을 추가하는 화면입니다.</p>
+            <div class="setting-header">
+                <span class="setting-title-ko">추가하기</span>
+                <span class="setting-title-en">ADD</span>
+            </div>
+
+            <div class="add-layout">
+                <div class="add-main">
+                    <div class="add-form">
+                        <div class="field">
+                            <input type="text" id="name-input" maxlength="12" placeholder="이름을 적어주세요" autocomplete="off" enterkeyhint="next">
+                            <span class="count" id="name-count">0 / 12</span>
+                        </div>
+                        <div class="field">
+                            <textarea id="desc-input" maxlength="70" placeholder="설명을 추가해주세요"></textarea>
+                            <span class="count" id="desc-count">0 / 70</span>
+                        </div>
+                    </div>
+                    <button type="button" class="add-btn" id="add-btn" disabled>추가하기</button>
+                    <div class="add-status" id="add-status" role="status" aria-live="polite"></div>
+                </div>
+
+                <div class="add-side">
+                    <div class="hist-slot empty" id="hist-slot">
+                        <div class="hist-label">추가 기록</div>
+                        <div class="hist-panel" id="hist-panel"><div id="hist-list"></div></div>
+                    </div>
+                    <div class="add-notice">
+                        <h4>알아주세요 !</h4>
+                        <p>01 : 불건전하거나 위험한 단어는 안돼요! 그게 닉네임이더라도..</p>
+                        <p>02 : 본명을 적지 말아주세요! 되도록이면 자신의 넷상 활동명이나, 캐릭터 이름을 추천해요!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="edit-modal" class="modal-overlay edit-overlay">
+        <div class="edit-wrap">
+            <div class="edit-heading">수정하기</div>
+            <div class="edit-card">
+                <div class="field">
+                    <input type="text" id="edit-name" maxlength="12" autocomplete="off" aria-label="이름">
+                    <span class="count" id="edit-name-count">0 / 12</span>
+                </div>
+                <div class="field">
+                    <textarea id="edit-desc" maxlength="70" aria-label="설명"></textarea>
+                    <span class="count" id="edit-desc-count">0 / 70</span>
+                </div>
+                <div class="edit-status" id="edit-status" role="status" aria-live="polite"></div>
+                <button type="button" class="edit-submit" id="edit-submit" disabled>수정하기</button>
+            </div>
         </div>
     </div>
 
@@ -523,19 +725,17 @@ body.anim-off .text-paragraph { animation: none !important; }
         const resultsArea = document.getElementById('results-area');
         const themeToggle = document.getElementById('theme-toggle');
         const animToggle = document.getElementById('anim-toggle');
-        let lastKey = ""; // 직전 검색 결과 목록 (같은 결과면 애니메이션을 다시 재생하지 않기 위함)
+        let lastKey = "";
 
-        /* 💡 검색 대상 데이터: 여기에 { name: "이름", desc: "설명" } 형태로 계속 추가하면 됩니다 */
-        const people = [
-            { name: "키엣",  desc: "고양이입니다." },
-            { name: "라케",  desc: "레몬고양이입니다." },
-            { name: "글루미", desc: "물속성고양이입니다." }
+        const SEED_PEOPLE = [
+            { id: "seed-1", name: "키엣",  desc: "고양이입니다.",       owner: "seed" },
+            { id: "seed-2", name: "라케",  desc: "레몬고양이입니다.",    owner: "seed" },
+            { id: "seed-3", name: "글루미", desc: "물속성고양이입니다.", owner: "seed" },
+            { id: "seed-4", name: "플레어", desc: "불속성고양이입니다.", owner: "seed" },
+            { id: "seed-5", name: "레너", desc: "키엣칭구", owner: "seed" }
         ];
+        let people = [...SEED_PEOPLE];
 
-        /* 💡 한글 검색용 변환: 글자를 자음/모음 단위로 쪼개서 비교해요.
-           - 한글은 입력 중간 상태(예: "라" → "랔" → "라케")에서도 결과가 사라지지 않게 받침을 자음으로 통일
-           - 덕분에 "ㅋ", "키ㅇ" 같은 미완성 글자로도 검색되고, 이름의 어느 부분만 쳐도 나옴
-           - 영어는 대소문자 구분 없음 */
         const JONG_TO_CHO = {
             0x11A8:0x1100, 0x11A9:0x1101, 0x11AB:0x1102, 0x11AE:0x1103, 0x11AF:0x1105, 0x11B7:0x1106,
             0x11B8:0x1107, 0x11BA:0x1109, 0x11BB:0x110A, 0x11BC:0x110B, 0x11BD:0x110C, 0x11BE:0x110E,
@@ -546,10 +746,9 @@ body.anim-off .text-paragraph { animation: none !important; }
                 .replace(/[\u11A8-\u11C2]/g, ch => String.fromCharCode(JONG_TO_CHO[ch.charCodeAt(0)] || ch.charCodeAt(0)));
         }
 
-        /* 💡 검색결과 글자 자동 맞춤: 글이 길어질수록 글자가 조금씩 작아져서 칸을 넘지 않게 해요 */
-        const TITLE_MAX = 24, TITLE_MIN = 12;            // 제목 글자 크기 범위(px) — 제목은 한 줄
-        const DESC_MAX = 14, DESC_MIN = 9;               // 설명 글자 크기 범위(px)
-        const DESC_LINES = 4, DESC_LINE_HEIGHT = 1.8;    // 설명은 기본 크기 기준 최대 4줄 높이까지
+        const TITLE_MAX = 24, TITLE_MIN = 12;     
+        const DESC_MAX = 14, DESC_MIN = 9;              
+        const DESC_LINES = 4, DESC_LINE_HEIGHT = 1.8;
 
         function fitTitle(el) {
             let size = TITLE_MAX;
@@ -568,7 +767,7 @@ body.anim-off .text-paragraph { animation: none !important; }
                 size -= 0.5;
                 el.style.fontSize = size + 'px';
             }
-            // 가장 작은 크기로도 안 들어가면 마지막 줄을 "..."으로 줄임
+
             if (el.scrollHeight > budget + 1) {
                 el.style.display = '-webkit-box';
                 el.style.webkitBoxOrient = 'vertical';
@@ -584,7 +783,6 @@ body.anim-off .text-paragraph { animation: none !important; }
             });
         }
 
-        // 화면 크기가 바뀌거나 폰트가 뒤늦게 불러와져도 다시 맞춤
         let lastWidth = 0;
         new ResizeObserver(entries => {
             const w = Math.round(entries[0].contentRect.width);
@@ -592,7 +790,6 @@ body.anim-off .text-paragraph { animation: none !important; }
         }).observe(resultsArea);
         if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitAll);
 
-        /* 💡 스크롤 양(%) 계산해서 스케치 속 검은색 블록 바 늘려주기 */
         scrollContent.addEventListener('scroll', () => {
             const scrollTop = scrollContent.scrollTop;
             const scrollHeight = scrollContent.scrollHeight - scrollContent.clientHeight;
@@ -600,19 +797,15 @@ body.anim-off .text-paragraph { animation: none !important; }
             progressBar.style.height = scrollPercentage + '%';
         });
 
-        /* 💡 실시간 브라우저 탭 제목 연동 및 검색 기능 */
-        searchInput.addEventListener('input', (e) => {
-            const value = e.target.value.trim();
+        function runSearch() {
+            const value = searchInput.value.trim();
             document.title = value === "" ? "FIND" : value;
             
             if (value === "") { resultsArea.innerHTML = ""; lastKey = ""; return; }
             const searchVal = normalizeKo(value);
-            
-            // (검색 데이터는 위쪽 people 목록에서 관리해요)
 
             const filtered = people.filter(p => normalizeKo(p.name).includes(searchVal));
 
-            // 결과 목록이 이전과 같으면 그대로 둠 (글자를 칠 때마다 깜빡이는 것 방지)
             const key = filtered.length === 0 ? "none" : filtered.map(p => p.name).join("|");
             if (key === lastKey) return;
             lastKey = key;
@@ -624,8 +817,8 @@ body.anim-off .text-paragraph { animation: none !important; }
                 filtered.forEach((item, i) => {
                     const div = document.createElement('div');
                     div.className = 'result-item';
-                    div.dataset.shade = Math.min(i, 3); // 0~3단계: 아래로 갈수록 어두운 그라데이션
-                    div.style.animationDelay = (i * 80) + 'ms'; // 카드마다 80ms씩 늦게 등장
+                    div.dataset.shade = Math.min(i, 3);
+                    div.style.animationDelay = (i * 80) + 'ms';
 
                     const inner = document.createElement('div');
                     inner.className = 'result-inner';
@@ -639,9 +832,11 @@ body.anim-off .text-paragraph { animation: none !important; }
                 });
                 fitAll();
             }
-        });
+        }
+        searchInput.addEventListener('input', runSearch);
 
-        /* 💡 스케치 기획안대로 다크 모드 켜고 끄기 */
+        function refreshSearch() { lastKey = ""; runSearch(); }
+
         themeToggle.addEventListener('change', (e) => {
             if (e.target.checked) {
                 document.documentElement.setAttribute('data-theme', 'dark');
@@ -650,7 +845,6 @@ body.anim-off .text-paragraph { animation: none !important; }
             }
         });
 
-        /* 💡 스케치 기획안대로 애니메이션 On/Off 제어하기 */
         animToggle.addEventListener('change', (e) => {
             if (e.target.checked) {
                 document.body.classList.remove('anim-off');
@@ -665,24 +859,341 @@ body.anim-off .text-paragraph { animation: none !important; }
             const modal = document.getElementById(id);
             modal.classList.remove('closing');
             modal.classList.add('show');
+            if (id === 'add-modal') { renderHistory({ animateAll: true }); checkAdd(); }
         }
 
         function closeModal(id) {
             const modal = document.getElementById(id);
-            // 애니메이션이 꺼져 있으면 바로 닫기
             if (document.body.classList.contains('anim-off')) {
                 modal.classList.remove('show', 'closing');
                 return;
             }
-            // 닫힘 애니메이션이 끝나면 완전히 숨김
+
             modal.classList.add('closing');
             modal.addEventListener('animationend', function done(e) {
-                if (e.target !== modal) return; // 안쪽 요소의 애니메이션 종료는 무시
+                if (e.target !== modal) return;
                 modal.removeEventListener('animationend', done);
-                if (!modal.classList.contains('closing')) return; // 닫히는 도중 다시 열렸다면 그대로 둠
+                if (!modal.classList.contains('closing')) return;
                 modal.classList.remove('show', 'closing');
             });
         }
+
+        /* ================================================================
+         "추가" 기능 (이름 추가 / 수정 / 삭제)
+           ================================================================ */
+        const MAX_NAME = 12, MAX_DESC = 70;
+        const MAX_PER_USER = 3;
+
+        function currentUser() { return "guest"; }
+
+        const STORE_KEY = "find-user-records-v1";
+        const store = {
+            async load() {
+                try { return JSON.parse(localStorage.getItem(STORE_KEY)) || []; }
+                catch (e) { return []; }
+            },
+            async save(list) {
+                try { localStorage.setItem(STORE_KEY, JSON.stringify(list)); return true; }
+                catch (e) { return false; }
+            }
+        };
+
+        let userRecords = [];
+        let storageOk = true;      
+
+        function sanitizeRecords(list) {
+            if (!Array.isArray(list)) return [];
+            return list
+                .filter(r => r && typeof r.id === "string" && typeof r.name === "string"
+                          && typeof r.desc === "string" && typeof r.owner === "string")
+                .map(r => ({
+                    id: r.id,
+                    name: r.name.slice(0, MAX_NAME),
+                    desc: r.desc.slice(0, MAX_DESC),
+                    owner: r.owner,
+                    createdAt: Number(r.createdAt) || 0
+                }));
+        }
+
+        function rebuildPeople() { people = [...SEED_PEOPLE, ...userRecords]; }
+        function myRecords() { return userRecords.filter(r => r.owner === currentUser()); }
+        function makeId() {
+            return (window.crypto && crypto.randomUUID) ? crypto.randomUUID()
+                 : "r" + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+        }
+
+        async function dbAdd(rec) {
+            userRecords.push(rec);
+            rebuildPeople();
+            storageOk = await store.save(userRecords);
+            return storageOk;
+        }
+        async function dbUpdate(id, patch) {
+            const r = userRecords.find(x => x.id === id);
+            if (!r || r.owner !== currentUser()) return false;
+            Object.assign(r, patch);
+            rebuildPeople();
+            storageOk = await store.save(userRecords);
+            return true;
+        }
+        async function dbRemove(id) {
+            const r = userRecords.find(x => x.id === id);
+            if (!r || r.owner !== currentUser()) return false;
+            userRecords = userRecords.filter(x => x.id !== id);
+            rebuildPeople();
+            storageOk = await store.save(userRecords);
+            return true;
+        }
+
+        const BLOCKED_WORDS = ["시발", "씨발", "ㅅㅂ", "병신", "ㅂㅅ", "지랄", "좆", "개새끼", "fuck", "shit", "bitch","샤갈","썅","장애","장애인","fucker"];
+        function isBlocked(text) {
+       
+            const t = text.toLowerCase().replace(/[\s\-_.,!?'"~*^`+=/\\|:;()\[\]{}<>@#$%&]/g, "");
+            return BLOCKED_WORDS.some(w => t.includes(w));
+        }
+        const BLOCKED_MSG = "사용할 수 없는 단어가 들어 있어요. 다른 말로 바꿔주세요.";
+
+        const isAnimOff = () => document.body.classList.contains('anim-off');
+        function cleanText(s) { return s.replace(/\s+/g, " ").trim(); }
+
+        function updateCount(input, counter, max) {
+            const len = input.value.length;
+            counter.textContent = len + " / " + max;
+            const atLimit = len >= max;
+            if (atLimit && !counter.classList.contains('at-limit')) {
+                counter.classList.remove('bump');
+                void counter.offsetWidth;  
+                counter.classList.add('bump');
+            }
+            if (!atLimit) counter.classList.remove('bump');
+            counter.classList.toggle('at-limit', atLimit);
+        }
+
+        function bindField(input, counter, max, onChange, onEnter) {
+            input.addEventListener('input', () => {
+                if (/[\r\n]/.test(input.value)) input.value = input.value.replace(/[\r\n]+/g, " ");
+                updateCount(input, counter, max);
+                onChange();
+            });
+            input.addEventListener('keydown', (e) => {
+                if (e.key !== 'Enter' || e.isComposing) return; 
+                e.preventDefault();
+                if (onEnter) onEnter();
+            });
+        }
+
+        const nameInput = document.getElementById('name-input');
+        const descInput = document.getElementById('desc-input');
+        const nameCount = document.getElementById('name-count');
+        const descCount = document.getElementById('desc-count');
+        const addBtn = document.getElementById('add-btn');
+        const addStatus = document.getElementById('add-status');
+        const histSlot = document.getElementById('hist-slot');
+        const histPanel = document.getElementById('hist-panel');
+        const histList = document.getElementById('hist-list');
+
+        function checkAdd() {
+            const name = cleanText(nameInput.value), desc = cleanText(descInput.value);
+            let msg = "", ok = false;
+            if (myRecords().length >= MAX_PER_USER) {
+                msg = "추가할 수 있는 이름은 최대 " + MAX_PER_USER + "개예요. 하나를 삭제하면 새로 추가할 수 있어요.";
+            } else if (isBlocked(name) || isBlocked(desc)) {
+                msg = BLOCKED_MSG;
+            } else {
+                ok = name.length > 0 && desc.length > 0;
+                if (!storageOk) msg = "이 브라우저에서는 저장이 안 돼서, 창을 닫으면 사라져요.";
+            }
+            addBtn.disabled = !ok;
+            if (addStatus.textContent !== msg) addStatus.textContent = msg;
+            return ok;
+        }
+
+        let addDoneTimer = null;
+        function resetAddDone() {
+            clearTimeout(addDoneTimer);
+            addBtn.classList.remove('done');
+            addBtn.textContent = "추가하기";
+        }
+        function flashAddDone() {
+            clearTimeout(addDoneTimer);
+            addBtn.classList.remove('done');
+            void addBtn.offsetWidth;
+            addBtn.classList.add('done');
+            addBtn.textContent = "추가됐어요!";
+            addDoneTimer = setTimeout(resetAddDone, 1600);
+        }
+
+        bindField(nameInput, nameCount, MAX_NAME, () => { resetAddDone(); checkAdd(); }, () => descInput.focus());
+        bindField(descInput, descCount, MAX_DESC, () => { resetAddDone(); checkAdd(); });
+
+        let adding = false;
+        addBtn.addEventListener('click', async () => {
+            if (adding || !checkAdd()) return;
+            adding = true;
+            const rec = {
+                id: makeId(),
+                name: cleanText(nameInput.value),
+                desc: cleanText(descInput.value),
+                owner: currentUser(),
+                createdAt: Date.now()
+            };
+            await dbAdd(rec);
+            nameInput.value = ""; descInput.value = "";
+            updateCount(nameInput, nameCount, MAX_NAME);
+            updateCount(descInput, descCount, MAX_DESC);
+            renderHistory({ newId: rec.id });
+            histPanel.scrollTop = 0;
+            refreshSearch();
+            checkAdd();
+            flashAddDone();
+            adding = false;
+        });
+
+        function animateOut(el) {
+            if (isAnimOff()) return Promise.resolve();
+            el.classList.remove('enter');
+            el.classList.add('leaving');
+            return new Promise(resolve => {
+                let finished = false;
+                const end = () => { if (!finished) { finished = true; resolve(); } };
+                el.addEventListener('animationend', end, { once: true });
+                setTimeout(end, 450);
+            });
+        }
+
+        function renderHistory({ animateAll = false, newId = null, flashId = null } = {}) {
+            const mine = myRecords().slice().reverse(); 
+            histList.innerHTML = "";
+            histSlot.classList.toggle('empty', mine.length === 0);
+
+            mine.forEach((rec, i) => {
+                const row = document.createElement('div');
+                row.className = 'hist-row';
+                if (animateAll) { row.classList.add('enter'); row.style.animationDelay = (i * 70) + 'ms'; }
+                else if (rec.id === newId) row.classList.add('enter');
+                if (rec.id === flashId) row.classList.add('flash');
+
+                const name = document.createElement('span');
+                name.className = 'hist-name';
+                name.textContent = rec.name;
+
+                const actions = document.createElement('div');
+                actions.className = 'hist-actions';
+
+                const editBtn = document.createElement('button');
+                editBtn.type = 'button';
+                editBtn.className = 'hist-btn edit';
+                editBtn.textContent = '수정';
+                editBtn.setAttribute('aria-label', rec.name + ' 수정');
+                editBtn.addEventListener('click', () => openEdit(rec.id));
+
+                const delBtn = document.createElement('button');
+                delBtn.type = 'button';
+                delBtn.className = 'hist-btn del';
+                delBtn.textContent = '삭제';
+                delBtn.setAttribute('aria-label', rec.name + ' 삭제');
+                delBtn.addEventListener('click', async () => {
+                    if (delBtn.classList.contains('armed')) {
+                        await animateOut(row);
+                        await dbRemove(rec.id);
+                        renderHistory();
+                        refreshSearch();
+                        checkAdd();
+                        return;
+                    }
+                    delBtn.classList.add('armed');
+                    delBtn.textContent = '정말요?';
+                    setTimeout(() => {
+                        if (!delBtn.isConnected) return;
+                        delBtn.classList.remove('armed');
+                        delBtn.textContent = '삭제';
+                    }, 2500);
+                });
+
+                actions.append(editBtn, delBtn);
+                row.append(name, actions);
+                histList.appendChild(row);
+            });
+        }
+
+        const editName = document.getElementById('edit-name');
+        const editDesc = document.getElementById('edit-desc');
+        const editNameCount = document.getElementById('edit-name-count');
+        const editDescCount = document.getElementById('edit-desc-count');
+        const editSubmit = document.getElementById('edit-submit');
+        const editStatus = document.getElementById('edit-status');
+        const editModal = document.getElementById('edit-modal');
+        let editingId = null;
+
+        function checkEdit() {
+            const rec = userRecords.find(r => r.id === editingId);
+            const name = cleanText(editName.value), desc = cleanText(editDesc.value);
+            let msg = "", ok = false;
+            if (isBlocked(name) || isBlocked(desc)) {
+                msg = BLOCKED_MSG;
+            } else {
+                const changed = !!rec && (name !== rec.name || desc !== rec.desc);
+                ok = name.length > 0 && desc.length > 0 && changed;
+            }
+            editSubmit.disabled = !ok;
+            if (editStatus.textContent !== msg) editStatus.textContent = msg;
+            return ok;
+        }
+
+        bindField(editName, editNameCount, MAX_NAME, checkEdit, () => editDesc.focus());
+        bindField(editDesc, editDescCount, MAX_DESC, checkEdit);
+
+        function openEdit(id) {
+            const rec = userRecords.find(r => r.id === id);
+            if (!rec) return;
+            editingId = id;
+            editName.value = rec.name;
+            editDesc.value = rec.desc;
+            updateCount(editName, editNameCount, MAX_NAME);
+            updateCount(editDesc, editDescCount, MAX_DESC);
+            checkEdit();
+            openModal('edit-modal');
+            setTimeout(() => editName.focus(), 60);
+        }
+
+        editSubmit.addEventListener('click', async () => {
+            if (!checkEdit()) return;
+            const id = editingId;
+            await dbUpdate(id, { name: cleanText(editName.value), desc: cleanText(editDesc.value) });
+            closeModal('edit-modal');
+            renderHistory({ flashId: id });
+            refreshSearch();
+        });
+
+   
+        editModal.addEventListener('mousedown', (e) => { if (e.target === editModal) closeModal('edit-modal'); });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key !== 'Escape') return;
+            const open = [...document.querySelectorAll('.modal-overlay.show:not(.closing)')];
+            if (!open.length) return;
+            const top = open.find(m => m.id === 'edit-modal') || open[open.length - 1];
+            closeModal(top.id);
+        });
+
+        window.addEventListener('storage', async (e) => {
+            if (e.key !== STORE_KEY) return;
+            userRecords = sanitizeRecords(await store.load());
+            rebuildPeople();
+            renderHistory();
+            refreshSearch();
+            checkAdd();
+        });
+
+        (async () => {
+            userRecords = sanitizeRecords(await store.load());
+            rebuildPeople();
+            renderHistory();
+            updateCount(nameInput, nameCount, MAX_NAME);
+            updateCount(descInput, descCount, MAX_DESC);
+            checkAdd();
+            refreshSearch();
+        })();
     </script>
 
 </body>
